@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "innovamas-app",
+    "target": "innovamas",
     "public": "dist",
     "ignore": [
       "firebase.json",

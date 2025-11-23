@@ -6,107 +6,120 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // In the Aduni style, the header background is Cyan (#00adef).
-  // The links are white.
+  // In the Aduni/Innovamas style:
+  // Primary: Cyan/Blue
+  // Text: White on bg, Dark on white
   
   const navLinks = [
+    { name: 'INICIO', path: '/' },
     { name: 'CICLOS', path: '/ciclos' },
-    { name: 'RECURSOS', path: '/recursos' },
     { name: 'SEDES', path: '/sedes' },
+    { name: 'RECURSOS', path: '/recursos' },
     { name: 'NOSOTROS', path: '/nosotros' },
-    { name: 'CONTACTO', path: '/contacto' },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-md bg-brand-cyan font-sans">
-      {/* Top thin bar - integrated visually but conceptually separate */}
-      <div className="container mx-auto px-4">
-        <div className="flex justify-end items-center h-10 text-xs md:text-base font-bold text-white space-x-4 md:space-x-8 pt-2">
-          <a href="#" className="hover:text-brand-darkblue transition">INTRANET</a>
-          <a href="#" className="hover:text-brand-darkblue transition">REGLAMENTO</a>
-          <a href="#" className="bg-black text-white px-4 py-1 rounded-full hover:bg-gray-800 transition hidden sm:inline-block text-xs md:text-sm">CONCURSOS</a>
-          <div className="flex items-center space-x-2">
-            <Phone size={16} />
-            <span className="text-xl md:text-2xl font-display italic">480 - 0048</span>
+    <header className="sticky top-0 z-50 w-full shadow-lg bg-white font-sans">
+      {/* Top Bar - Cyan Background */}
+      <div className="bg-brand-cyan text-white py-2 px-4">
+        <div className="container mx-auto flex justify-between items-center text-xs md:text-sm font-bold">
+          <div className="flex space-x-4">
+             <span className="hidden sm:inline">¡Tu ingreso es nuestro objetivo!</span>
+             <a href="#" className="hover:text-brand-darkblue transition underline decoration-dotted">Intranet Alumnos</a>
           </div>
-          <a href="#" className="hover:text-brand-darkblue"><MessageCircle size={20} /></a>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-1">
+               <Phone size={14} /> <span>(01) 480 - 0048</span>
+            </div>
+            <a href="https://wa.me/51999888777" target="_blank" className="flex items-center gap-1 hover:text-brand-darkblue transition">
+               <MessageCircle size={14} /> <span>WhatsApp</span>
+            </a>
+          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-0 md:px-4 relative">
-        <div className="flex justify-between items-center h-20 md:h-28">
+      {/* Main Navbar */}
+      <div className="container mx-auto px-4 relative">
+        <div className="flex justify-between items-center h-20 md:h-24">
           
-          {/* Logo Container - Slanted White Box */}
-          <div className="absolute top-[-2.5rem] md:top-[-3.5rem] left-0 h-[7.5rem] md:h-[10.5rem] w-[240px] md:w-[360px] bg-white z-20 clip-trapezoid flex items-end pb-4 md:pb-8 pl-4 md:pl-8 shadow-sm">
-             <Link to="/" className="flex flex-col leading-none group">
-                <div className="flex items-center gap-2 text-brand-cyan mb-1">
-                  <GraduationCap size={36} />
-                  <span className="text-[10px] md:text-sm font-bold tracking-[0.2em] text-gray-500 uppercase">Academia</span>
-                </div>
-                <span className="text-3xl md:text-5xl font-extrabold text-brand-cyan italic tracking-tighter group-hover:scale-105 transition-transform origin-left">
-                  INNOVAMAS
-                </span>
-             </Link>
-          </div>
-
-          {/* Spacer for Logo to push menu right */}
-          <div className="w-[220px] md:w-[340px] flex-shrink-0"></div>
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="bg-brand-cyan text-white p-2 rounded-lg transform group-hover:rotate-6 transition duration-300">
+               <GraduationCap size={32} />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="text-2xl md:text-3xl font-black text-brand-blue tracking-tighter italic">
+                INNOVAMAS
+              </span>
+              <span className="text-[10px] md:text-xs font-bold tracking-[0.3em] text-slate-400 uppercase">
+                Academia
+              </span>
+            </div>
+          </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
+          <nav className="hidden lg:flex items-center space-x-1">
             {navLinks.map((link) => (
               <Link 
                 key={link.name} 
                 to={link.path} 
-                className="text-white font-bold text-base lg:text-xl hover:text-brand-darkblue transition-colors duration-200 tracking-tight"
+                className={`px-4 py-2 font-bold text-sm uppercase tracking-wide transition-all duration-200 rounded-full hover:bg-slate-50 hover:text-brand-cyan ${
+                  location.pathname === link.path ? 'text-brand-cyan bg-blue-50' : 'text-slate-600'
+                }`}
               >
                 {link.name}
               </Link>
             ))}
-            <Link 
-              to="/contacto" 
-              className="bg-brand-darkblue hover:bg-brand-dark text-white px-6 py-3 rounded-md text-base font-bold uppercase tracking-wide shadow-lg transition-all transform hover:-translate-y-0.5"
-            >
-              Matrícula en línea
-            </Link>
           </nav>
 
+          {/* CTA Button */}
+          <div className="hidden md:flex items-center">
+            <Link 
+              to="/contacto" 
+              className="bg-brand-magenta hover:bg-pink-600 text-white px-6 py-3 rounded-full text-sm font-black uppercase tracking-wide shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+            >
+              Matrícula 2025
+            </Link>
+          </div>
+
           {/* Mobile Toggle */}
-          <div className="flex items-center gap-4 pr-4 md:hidden">
+          <div className="flex items-center gap-4 lg:hidden">
              <Link 
               to="/contacto" 
-              className="bg-brand-darkblue text-white px-3 py-1.5 rounded text-xs font-bold uppercase shadow-sm"
+              className="bg-brand-magenta text-white px-3 py-2 rounded-full text-xs font-bold uppercase shadow-sm"
             >
               Matrícula
             </Link>
             <button 
               onClick={() => setIsOpen(!isOpen)} 
-              className="text-white hover:text-brand-darkblue focus:outline-none"
+              className="text-brand-darkblue hover:text-brand-cyan focus:outline-none bg-slate-100 p-2 rounded-md"
             >
-              {isOpen ? <X size={32} /> : <Menu size={32} />}
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="md:hidden bg-brand-darkblue text-white border-t border-blue-800 animate-fade-in">
-          <div className="flex flex-col p-4 space-y-4">
+        <div className="lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-xl animate-fade-in-down">
+          <div className="flex flex-col p-4 space-y-2">
             {navLinks.map((link) => (
               <Link 
                 key={link.name} 
                 to={link.path} 
                 onClick={() => setIsOpen(false)}
-                className="font-bold text-xl hover:text-brand-cyan"
+                className={`font-bold text-lg p-3 rounded-lg ${
+                   location.pathname === link.path ? 'bg-blue-50 text-brand-cyan' : 'text-slate-600 hover:bg-slate-50'
+                }`}
               >
                 {link.name}
               </Link>
             ))}
-            <div className="border-t border-blue-800 pt-4 mt-2 text-sm text-blue-200 flex justify-between">
-              <span>Intranet</span>
-              <span>Reglamento</span>
-            </div>
+            <div className="h-px bg-gray-100 my-2"></div>
+            <a href="#" className="p-3 text-slate-500 font-medium text-sm flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div> Intranet Alumnos
+            </a>
           </div>
         </div>
       )}
