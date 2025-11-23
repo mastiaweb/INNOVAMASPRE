@@ -1,13 +1,23 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Initialize the client with the API key from the environment
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// No inicializamos 'ai' aquí arriba para evitar errores fatales si la API KEY falta al cargar la página.
 
 export const sendMessageToGemini = async (
   history: { role: 'user' | 'model'; parts: { text: string }[] }[],
   message: string
 ): Promise<string> => {
   try {
+    // Obtenemos la key de manera segura
+    const apiKey = process.env.API_KEY;
+
+    if (!apiKey) {
+        console.warn("API Key no encontrada. El chat no responderá.");
+        return "Lo siento, mi sistema de IA no está configurado correctamente en este momento. Por favor contacta a la academia directamente.";
+    }
+
+    // Inicializamos el cliente SOLO cuando se necesita
+    const ai = new GoogleGenAI({ apiKey: apiKey });
+
     // Define the model to use
     const modelId = 'gemini-2.5-flash';
 

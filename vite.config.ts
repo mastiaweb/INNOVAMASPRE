@@ -6,9 +6,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
-  // Esto es vital: define process.env como un objeto vacío para que
-  // el navegador no arroje el error "Uncaught ReferenceError: process is not defined"
   define: {
+    // Esto previene el error "process is not defined" en el navegador.
+    // process.env será un objeto vacío, por lo que process.env.API_KEY será undefined (manejado ahora en el servicio).
     'process.env': {}
   }
 });

@@ -8,7 +8,6 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Locations from './pages/Locations';
 import Resources from './pages/Resources';
-import GeminiChat from './components/GeminiChat';
 import FloatingContact from './components/FloatingContact';
 
 // Scroll to top wrapper
@@ -40,7 +39,6 @@ const App: React.FC = () => {
         </main>
         <Footer />
         <FloatingContact />
-        <GeminiChat />
       </div>
     </Router>
   );
