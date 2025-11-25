@@ -3,7 +3,7 @@ import { GraduationCap } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gradient-to-br from-[#3b82f6] to-[#06b6d4] text-white py-20 font-sans relative overflow-hidden">
+    <footer className="bg-gradient-to-r from-brand-blue to-brand-cyan text-white py-20 font-sans relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-10 pointer-events-none">
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full blur-3xl"></div>

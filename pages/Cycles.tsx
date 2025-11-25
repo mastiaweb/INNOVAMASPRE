@@ -1,292 +1,434 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronRight, Clock, Calendar, MapPin, BookOpen, Award, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Calendar, Clock, BookOpen, User, CheckCircle, ChevronRight, Menu, ArrowRight } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
-import { Cycle } from '../types';
+import ScrollReveal from '../components/ScrollReveal';
 
-// Datos de las Universidades (Categorías)
-const universities = [
-  {
-    id: 'unfv',
-    name: 'Federico Villarreal',
-    shortName: 'Villarreal',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/6/68/Local_Central_de_la_UNFV.jpg', // Imagen referencial UNFV
-    color: 'bg-orange-500',
-    textColor: 'text-[#5b6bf1]', // Tono azul/lila de la imagen referencia
-  },
-  {
-    id: 'unmsm',
-    name: 'San Marcos',
-    shortName: 'San Marcos',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Casona_de_la_Universidad_Nacional_Mayor_de_San_Marcos_-_Parque_Universitario_-_Lima.jpg/1200px-Casona_de_la_Universidad_Nacional_Mayor_de_San_Marcos_-_Parque_Universitario_-_Lima.jpg', // Imagen referencial UNMSM
-    color: 'bg-red-700',
-    textColor: 'text-[#5b6bf1]',
-  },
-  {
-    id: 'uni',
-    name: 'UNI',
-    shortName: 'UNI',
-    image: 'https://portal.uni.edu.pe/images/slider/fachada_uni.jpg', // Imagen referencial UNI
-    color: 'bg-brand-magenta',
-    textColor: 'text-[#5b6bf1]',
-  }
-];
+// Definición de tipos para los datos del ciclo
+interface ScheduleDetail {
+  shift: string;
+  time: string;
+}
 
-// Datos de los Ciclos Específicos
-const allCycles: Cycle[] = [
+interface CycleData {
+  id: string;
+  university: 'San Marcos' | 'Villarreal';
+  title: string;
+  description: string;
+  methodology: string;
+  startDate: string;
+  endDate: string;
+  modality: string;
+  duration: string;
+  schedules: ScheduleDetail[];
+  image: string;
+  tag?: string;
+}
+
+// Base de datos de ciclos completa
+const cyclesData: CycleData[] = [
+  // --- SAN MARCOS ---
   {
-    id: '1',
-    title: 'Anual UNI 2025',
-    university: 'UNI',
-    description: 'Preparación integral desde cero. Domina todas las materias con la máxima exigencia.',
-    startDate: '15 de Marzo',
-    schedule: 'Lun-Sab 8am - 2pm',
-    image: 'https://picsum.photos/id/1/400/300',
-    modality: 'Presencial'
-  },
-  {
-    id: '2',
-    title: 'Semestral San Marcos',
+    id: 'sm-admision',
     university: 'San Marcos',
-    description: 'Ciclo intensivo para estudiantes con base. Full práctica DECO.',
-    startDate: '01 de Abril',
-    schedule: 'Lun-Sab 8am - 2pm',
-    image: 'https://picsum.photos/id/2/400/300',
-    modality: 'Híbrido'
+    title: 'Ciclo Admisión 2026',
+    description: 'Ciclo dirigido a estudiantes con experiencia preuniversitaria que buscan reforzar los temas frecuentes del prospecto, con mayor énfasis en la práctica, para postular al examen de admisión.',
+    methodology: '70% PRÁCTICO + 30% TEORÍA',
+    startDate: '2 de Diciembre de 2025',
+    endDate: '15 de Marzo de 2026',
+    modality: 'Presencial / Virtual',
+    duration: '14 semanas',
+    schedules: [
+      { shift: 'Mañana', time: '8:00 a.m. a 2:00 p.m.' },
+      { shift: 'Tarde', time: '3:00 p.m. a 8:00 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    tag: 'Recomendado'
   },
   {
-    id: '3',
-    title: 'Repaso Villarreal',
-    university: 'Callao', // Usando Callao como placeholder para otros
-    description: 'Las fijas para el examen. Exámenes pasados y simulacros constantes.',
-    startDate: '20 de Mayo',
-    schedule: 'Lun-Sab 3pm - 8pm',
-    image: 'https://picsum.photos/id/3/400/300',
-    modality: 'Virtual'
-  },
-  {
-    id: '4',
-    title: 'Verano Escolar',
-    university: 'General',
-    description: 'Adelanto escolar para alumnos de 3ro, 4to y 5to de secundaria.',
-    startDate: '05 de Enero',
-    schedule: 'Lun-Vie 8am - 1pm',
-    image: 'https://picsum.photos/id/4/400/300',
-    modality: 'Presencial'
-  },
-  {
-    id: '5',
-    title: 'Semestral UNI',
-    university: 'UNI',
-    description: 'Alta exigencia en matemáticas y ciencias. Nivel avanzado.',
-    startDate: '01 de Abril',
-    schedule: 'Lun-Sab 8am - 2pm',
-    image: 'https://picsum.photos/id/5/400/300',
-    modality: 'Presencial'
-  },
-  {
-    id: '6',
+    id: 'sm-repaso',
+    university: 'San Marcos',
     title: 'Repaso San Marcos',
+    description: 'Diseñado para alumnos que ya tienen base teórica y necesitan full práctica tipo examen de admisión (DECO). Resolvemos simulacros diarios y preguntas tipo.',
+    methodology: '100% FULL PRÁCTICA Y RESOLUCIÓN',
+    startDate: '5 de Enero de 2026',
+    endDate: '15 de Marzo de 2026',
+    modality: 'Presencial Tech / Virtual Prime',
+    duration: '9 semanas',
+    schedules: [
+      { shift: 'Mañana', time: '8:00 a.m. a 2:00 p.m.' },
+      { shift: 'Tarde', time: '2:00 p.m. a 8:00 p.m.' },
+      { shift: 'Noche', time: '6:00 p.m. a 10:00 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    tag: 'Nuevo'
+  },
+  {
+    id: 'sm-verano',
     university: 'San Marcos',
-    description: 'Full simulacros y resolución de dudas las últimas semanas antes del examen.',
-    startDate: '15 de Agosto',
-    schedule: 'Lun-Sab 8am - 5pm',
-    image: 'https://picsum.photos/id/6/400/300',
-    modality: 'Virtual'
+    title: 'Verano Básico',
+    description: 'Para alumnos que inician su preparación o terminaron 5to de secundaria. Se cubren los temas fundamentales para construir una base sólida.',
+    methodology: '50% TEORÍA + 50% PRÁCTICA',
+    startDate: '5 de Enero de 2026',
+    endDate: '7 de Marzo de 2026',
+    modality: 'Virtual / Presencial',
+    duration: '8 semanas',
+    schedules: [
+      { shift: 'Mañana', time: '8:00 a.m. a 1:00 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'sm-escolar',
+    university: 'San Marcos',
+    title: 'Escolar',
+    description: 'Adelanta tu preparación mientras estás en el colegio. Reforzamiento de cursos clave para asegurar un alto rendimiento escolar y preuniversitario.',
+    methodology: 'NIVELACIÓN Y AVANCE',
+    startDate: '5 de Enero de 2026',
+    endDate: '7 de Marzo de 2026',
+    modality: 'Virtual',
+    duration: '8 semanas',
+    schedules: [
+      { shift: 'Mañana', time: '9:00 a.m. a 1:00 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+
+  // --- VILLARREAL ---
+  {
+    id: 'unfv-admision',
+    university: 'Villarreal',
+    title: 'Ciclo Admisión UNFV',
+    description: 'Preparación exclusiva con el temario de la Universidad Federico Villarreal. Enfoque directo a las preguntas clásicas y nuevos formatos.',
+    methodology: 'TEORÍA RESUMIDA + PRÁCTICA OBJETIVA',
+    startDate: '2 de Diciembre de 2025',
+    endDate: 'Examen de Admisión',
+    modality: 'Presencial',
+    duration: 'Hasta el examen',
+    schedules: [
+      { shift: 'Mañana', time: '8:00 a.m. a 2:00 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    tag: 'Destacado'
+  },
+  {
+    id: 'unfv-repaso',
+    university: 'Villarreal',
+    title: 'Repaso Villarreal',
+    description: 'Repaso intensivo para el examen de la UNFV. Simulacros constantes y material especializado.',
+    methodology: 'FULL PRÁCTICA',
+    startDate: 'Enero 2026',
+    endDate: 'Marzo 2026',
+    modality: 'Virtual / Presencial',
+    duration: '8 semanas',
+    schedules: [
+      { shift: 'Mañana', time: '8:00 a.m. a 1:30 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'unfv-verano',
+    university: 'Villarreal',
+    title: 'Verano Básico UNFV',
+    description: 'Inicia tu preparación para la Villarreal desde cero. Ideal para alumnos que salen de colegio.',
+    methodology: 'TEORÍA Y PRÁCTICA GRADUAL',
+    startDate: '6 de Enero de 2026',
+    endDate: '28 de Febrero de 2026',
+    modality: 'Virtual',
+    duration: '8 semanas',
+    schedules: [
+      { shift: 'Mañana', time: '8:00 a.m. a 1:00 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1427504743055-e9ba63b72089?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'unfv-escolar',
+    university: 'Villarreal',
+    title: 'Escolar UNFV',
+    description: 'Refuerzo escolar con visión universitaria para alumnos de 3ro, 4to y 5to de secundaria.',
+    methodology: 'APOYO ESCOLAR + PREUNIVERSITARIO',
+    startDate: '12 de Enero de 2026',
+    endDate: '28 de Febrero de 2026',
+    modality: 'Virtual',
+    duration: '7 semanas',
+    schedules: [
+      { shift: 'Tarde', time: '3:00 p.m. a 7:00 p.m.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
   }
 ];
 
 const Cycles: React.FC = () => {
-  const [filter, setFilter] = useState('Todos');
+  const [searchParams] = useSearchParams();
+  const [selectedUniversity, setSelectedUniversity] = useState<'San Marcos' | 'Villarreal'>('San Marcos');
+  const [selectedCycleId, setSelectedCycleId] = useState<string>('sm-admision');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const filteredCycles = filter === 'Todos' 
-    ? allCycles 
-    : allCycles.filter(c => c.university === filter || (filter === 'Villarreal' && c.university === 'Callao')); // Logic adjust for demo
+  useEffect(() => {
+    // 1. Detectar universidad
+    const uParam = searchParams.get('u');
+    if (uParam === 'unfv') setSelectedUniversity('Villarreal');
+    else if (uParam === 'unmsm') setSelectedUniversity('San Marcos');
+
+    // 2. Detectar ID específico del ciclo
+    const idParam = searchParams.get('id');
+    if (idParam) {
+      // Validar si el ID existe en nuestra data
+      const exists = cyclesData.find(c => c.id === idParam);
+      if (exists) {
+        setSelectedCycleId(idParam);
+        setSelectedUniversity(exists.university);
+      }
+    } else {
+      // Si solo cambiamos de universidad pero no hay ID, seleccionar el primero de esa u
+      if (uParam === 'unfv' && selectedUniversity !== 'Villarreal') {
+         setSelectedCycleId('unfv-admision');
+      } else if (uParam === 'unmsm' && selectedUniversity !== 'San Marcos') {
+         setSelectedCycleId('sm-admision');
+      }
+    }
+  }, [searchParams, selectedUniversity]);
+
+  // Filtrar ciclos para el menú lateral
+  const smCycles = cyclesData.filter(c => c.university === 'San Marcos');
+  const unfvCycles = cyclesData.filter(c => c.university === 'Villarreal');
+
+  // Obtener datos del ciclo seleccionado actualmente
+  const activeCycle = cyclesData.find(c => c.id === selectedCycleId) || cyclesData[0];
 
   return (
-    <div className="animate-fade-in bg-white min-h-screen">
-      {/* Header */}
+    <div className="bg-slate-50 min-h-screen">
       <PageHeader 
         title="Nuestros Ciclos" 
-        subtitle="Elige tu destino académico y comienza tu preparación con los mejores." 
+        subtitle="Elige tu ciclo de preparación preuniversitaria." 
       />
 
-      {/* SECTION: University Selector (The Requested Design) */}
-      <section className="py-20 px-4 relative overflow-hidden">
-        {/* Background Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        
-        <div className="container mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black text-slate-800 font-display uppercase">
-              Elige tu <span className="text-brand-cyan">Universidad</span>
-            </h2>
-            <div className="w-20 h-1.5 bg-brand-yellow mx-auto mt-4 rounded-full"></div>
-          </div>
+      <div className="container mx-auto px-4 py-10">
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* SIDEBAR MENU */}
+          <div className="w-full lg:w-1/4">
+             <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-24">
+                {/* Mobile Toggle for Menu (Only visible on small screens) */}
+                <div className="lg:hidden p-4 bg-brand-cyan text-white font-bold flex justify-between items-center cursor-pointer" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                  <span>Menú de Ciclos</span>
+                  <Menu size={20} />
+                </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-6xl mx-auto">
-            {universities.map((uni) => (
-              <div 
-                key={uni.id}
-                onClick={() => setFilter(uni.shortName === 'Villarreal' ? 'Villarreal' : uni.shortName)}
-                className="group cursor-pointer"
-              >
-                {/* The Card */}
-                <div className="bg-[#EFEFEF] rounded-[3rem] p-6 pb-0 flex flex-col items-center text-center hover:shadow-2xl transition-all duration-300 transform group-hover:-translate-y-2 border border-gray-100 h-full">
+                <div className={`${mobileMenuOpen ? 'block' : 'hidden'} lg:block`}>
                   
-                  {/* Title */}
-                  <div className="mt-4 mb-6 px-4">
-                    <h3 className={`text-4xl md:text-5xl font-black font-display leading-tight ${uni.textColor} drop-shadow-sm`}>
-                      {uni.name.split(' ').map((word, i) => (
-                        <span key={i} className="block">{word}</span>
-                      ))}
-                    </h3>
+                  {/* San Marcos Group */}
+                  <div className="border-b border-gray-100">
+                    <div 
+                      className={`p-4 font-black uppercase tracking-wide cursor-pointer flex justify-between items-center transition-colors ${selectedUniversity === 'San Marcos' ? 'bg-brand-cyan text-white' : 'bg-white text-slate-700 hover:bg-slate-50'}`}
+                      onClick={() => {
+                        setSelectedUniversity('San Marcos');
+                        setSelectedCycleId(smCycles[0].id);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      <span>San Marcos</span>
+                      {selectedUniversity === 'San Marcos' && <ChevronRight size={18} />}
+                    </div>
+                    
+                    {selectedUniversity === 'San Marcos' && (
+                      <div className="bg-slate-50 animate-fade-in">
+                        {smCycles.map(cycle => (
+                          <button
+                            key={cycle.id}
+                            onClick={() => {
+                              setSelectedCycleId(cycle.id);
+                              setMobileMenuOpen(false);
+                            }}
+                            className={`w-full text-left px-6 py-3 text-sm font-bold border-l-4 transition-all ${
+                              selectedCycleId === cycle.id 
+                                ? 'border-brand-magenta text-brand-magenta bg-white shadow-sm' 
+                                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-gray-100'
+                            }`}
+                          >
+                            <div className="flex justify-between items-center">
+                              {cycle.title}
+                              {cycle.tag && (
+                                <span className="text-[10px] bg-brand-darkblue text-white px-1.5 py-0.5 rounded uppercase">
+                                  {cycle.tag}
+                                </span>
+                              )}
+                            </div>
+                            {cycle.title.includes('Repaso') && <span className="text-[10px] text-red-400 italic font-normal block mt-0.5">Incorporación</span>}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  {/* Image Container */}
-                  <div className="w-full mt-auto relative">
-                     <div className="rounded-t-[2.5rem] rounded-b-[2.5rem] overflow-hidden h-56 md:h-64 w-full shadow-inner relative z-10">
-                        <img 
-                          src={uni.image} 
-                          alt={uni.name} 
-                          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
-                     </div>
+                  {/* Villarreal Group */}
+                  <div>
+                    <div 
+                      className={`p-4 font-black uppercase tracking-wide cursor-pointer flex justify-between items-center transition-colors ${selectedUniversity === 'Villarreal' ? 'bg-orange-500 text-white' : 'bg-white text-slate-700 hover:bg-slate-50'}`}
+                      onClick={() => {
+                        setSelectedUniversity('Villarreal');
+                        setSelectedCycleId(unfvCycles[0].id);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      <span>Villarreal</span>
+                      {selectedUniversity === 'Villarreal' && <ChevronRight size={18} />}
+                    </div>
 
-                     {/* Floating Action Button - Positioned to overlap image and card */}
-                     <div className={`absolute bottom-4 right-4 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full ${uni.color} flex items-center justify-center text-white shadow-lg transform group-hover:scale-110 transition-transform duration-300`}>
-                        <ChevronRight size={28} strokeWidth={3} />
-                     </div>
+                    {selectedUniversity === 'Villarreal' && (
+                      <div className="bg-slate-50 animate-fade-in">
+                        {unfvCycles.map(cycle => (
+                          <button
+                            key={cycle.id}
+                            onClick={() => {
+                              setSelectedCycleId(cycle.id);
+                              setMobileMenuOpen(false);
+                            }}
+                            className={`w-full text-left px-6 py-3 text-sm font-bold border-l-4 transition-all ${
+                              selectedCycleId === cycle.id 
+                                ? 'border-brand-magenta text-brand-magenta bg-white shadow-sm' 
+                                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-gray-100'
+                            }`}
+                          >
+                            {cycle.title}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
+
                 </div>
-              </div>
-            ))}
+             </div>
           </div>
-        </div>
-      </section>
 
-      {/* SECTION: Benefits / Value Add */}
-      <section className="py-16 bg-slate-50 border-y border-gray-200">
-         <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-               <div className="flex flex-col items-center space-y-4 p-6 hover:bg-white hover:shadow-lg rounded-2xl transition">
-                  <div className="bg-brand-cyan/10 p-4 rounded-full text-brand-cyan">
-                     <Award size={32} />
+          {/* MAIN CONTENT AREA */}
+          <div className="w-full lg:w-3/4">
+             <ScrollReveal key={activeCycle.id} direction="up" duration={500}>
+               
+               {/* Header Image Banner */}
+               <div className="relative w-full h-48 md:h-64 rounded-t-3xl overflow-hidden shadow-lg mb-0 group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/90 to-transparent z-10"></div>
+                  <img src={activeCycle.image} alt={activeCycle.title} className="w-full h-full object-cover transform group-hover:scale-105 transition duration-700" />
+                  
+                  <div className="absolute bottom-0 left-0 p-8 z-20">
+                    <div className="bg-brand-yellow text-brand-darkblue text-xs font-black uppercase px-3 py-1 inline-block rounded mb-2 shadow">
+                       CICLO 2026
+                    </div>
+                    <h2 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter uppercase mb-2 text-shadow-sm">
+                      {activeCycle.title}
+                    </h2>
+                    {activeCycle.title.includes('ABC') && (
+                      <span className="bg-white text-brand-blue text-sm font-bold px-2 py-0.5 rounded">
+                        ABC - DE
+                      </span>
+                    )}
                   </div>
-                  <h4 className="font-black text-xl text-brand-darkblue">Exigencia Académica</h4>
-                  <p className="text-slate-600 text-sm">Niveles diferenciados según tu base académica para garantizar tu aprendizaje.</p>
                </div>
-               <div className="flex flex-col items-center space-y-4 p-6 hover:bg-white hover:shadow-lg rounded-2xl transition">
-                  <div className="bg-brand-magenta/10 p-4 rounded-full text-brand-magenta">
-                     <BookOpen size={32} />
+
+               {/* Main Body */}
+               <div className="bg-white rounded-b-3xl shadow-xl p-8 md:p-12 relative overflow-hidden">
+                  
+                  {/* Decorative Elements */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-full -z-0"></div>
+
+                  <div className="relative z-10 flex flex-col lg:flex-row gap-12">
+                    
+                    {/* Left Info Column */}
+                    <div className="w-full lg:w-3/5 space-y-8">
+                       
+                       {/* Description */}
+                       <div>
+                         <p className="text-slate-600 text-lg leading-relaxed font-medium">
+                           {activeCycle.description}
+                         </p>
+                       </div>
+
+                       {/* Methodology */}
+                       <div className="bg-blue-50 border-l-4 border-brand-cyan p-4 rounded-r-lg">
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Metodología</span>
+                          <span className="text-xl font-black text-brand-darkblue italic">{activeCycle.methodology}</span>
+                       </div>
+
+                       {/* Details Grid */}
+                       <div className="grid grid-cols-1 gap-4 pt-4">
+                          <div className="flex items-center">
+                             <div className="w-10 flex justify-center text-brand-cyan"><Calendar size={22} /></div>
+                             <div>
+                               <span className="block text-xs font-bold text-slate-400 uppercase">Inicio:</span>
+                               <span className="font-bold text-slate-700">{activeCycle.startDate}</span>
+                             </div>
+                          </div>
+                          <div className="flex items-center">
+                             <div className="w-10 flex justify-center text-brand-magenta"><Calendar size={22} /></div>
+                             <div>
+                               <span className="block text-xs font-bold text-slate-400 uppercase">Fin:</span>
+                               <span className="font-bold text-slate-700">{activeCycle.endDate}</span>
+                             </div>
+                          </div>
+                          <div className="flex items-center">
+                             <div className="w-10 flex justify-center text-brand-cyan"><User size={22} /></div>
+                             <div>
+                               <span className="block text-xs font-bold text-slate-400 uppercase">Modalidad:</span>
+                               <span className="font-bold text-slate-700">{activeCycle.modality}</span>
+                             </div>
+                          </div>
+                          <div className="flex items-center">
+                             <div className="w-10 flex justify-center text-brand-cyan"><Clock size={22} /></div>
+                             <div>
+                               <span className="block text-xs font-bold text-slate-400 uppercase">Duración:</span>
+                               <span className="font-bold text-slate-700">{activeCycle.duration}</span>
+                             </div>
+                          </div>
+                       </div>
+
+                       {/* Schedules Box */}
+                       <div className="pt-4">
+                          <div className="flex items-center mb-3">
+                             <div className="w-10 flex justify-center text-slate-400"><Clock size={22} /></div>
+                             <span className="font-bold text-slate-800 text-lg">Horarios Disponibles:</span>
+                          </div>
+                          <div className="pl-10 space-y-2">
+                             {activeCycle.schedules.map((sch, idx) => (
+                               <div key={idx} className="flex flex-col sm:flex-row sm:items-center bg-slate-50 p-3 rounded-lg border border-gray-100 hover:border-brand-cyan/30 transition-colors">
+                                  <span className="font-black text-brand-darkblue w-24 flex items-center gap-1">
+                                    {sch.shift} <ArrowRight size={14} className="text-brand-magenta" />
+                                  </span>
+                                  <span className="text-slate-600 font-medium">{sch.time}</span>
+                               </div>
+                             ))}
+                          </div>
+                       </div>
+
+                       {/* CTA Button */}
+                       <div className="pt-8">
+                         <Link 
+                           to="/contacto" 
+                           className="inline-block bg-gradient-to-r from-brand-magenta to-pink-600 text-white font-black uppercase text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all transform skew-x-[-10deg]"
+                         >
+                            <span className="block transform skew-x-[10deg]">Solicitar Horario de Clase</span>
+                         </Link>
+                       </div>
+
+                    </div>
+
+                    {/* Right Image/Student Column (Desktop Only) */}
+                    <div className="hidden lg:flex w-2/5 items-end justify-center relative">
+                        <div className="absolute top-10 right-0 w-40 h-40 bg-brand-yellow/20 rounded-full blur-3xl"></div>
+                        <img 
+                          src="https://images.unsplash.com/photo-1544717305-2782549b5136?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                          alt="Estudiante Innovamas"
+                          className="w-full object-contain relative z-10 drop-shadow-2xl hover:scale-105 transition duration-500"
+                          style={{ maxHeight: '500px' }}
+                        />
+                    </div>
+
                   </div>
-                  <h4 className="font-black text-xl text-brand-darkblue">Material Actualizado</h4>
-                  <p className="text-slate-600 text-sm">Libros y separatas con las últimas preguntas de exámenes de admisión.</p>
                </div>
-               <div className="flex flex-col items-center space-y-4 p-6 hover:bg-white hover:shadow-lg rounded-2xl transition">
-                  <div className="bg-brand-yellow/20 p-4 rounded-full text-brand-darkblue">
-                     <Zap size={32} />
-                  </div>
-                  <h4 className="font-black text-xl text-brand-darkblue">Plataforma Virtual</h4>
-                  <p className="text-slate-600 text-sm">Acceso 24/7 a clases grabadas, solucionarios y biblioteca virtual.</p>
-               </div>
-            </div>
-         </div>
-      </section>
+             </ScrollReveal>
+          </div>
 
-      {/* SECTION: Specific Cycles List */}
-      <section className="py-20 container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-           <div>
-             <span className="text-brand-cyan font-bold uppercase tracking-widest text-sm">Programación 2025</span>
-             <h2 className="text-3xl md:text-4xl font-black text-slate-800 font-display mt-2">
-               Ciclos Disponibles: <span className="text-brand-blue">{filter}</span>
-             </h2>
-           </div>
-           <div className="flex gap-2 mt-4 md:mt-0">
-             {['Todos', 'UNI', 'San Marcos', 'Villarreal'].map(f => (
-               <button 
-                 key={f}
-                 onClick={() => setFilter(f === 'Villarreal' ? 'Villarreal' : f)} // Simplified logic
-                 className={`px-4 py-2 rounded-full font-bold text-sm transition-colors ${
-                   (filter === f || (f === 'Villarreal' && filter === 'Villarreal')) 
-                   ? 'bg-brand-darkblue text-white shadow-md' 
-                   : 'bg-gray-100 text-slate-500 hover:bg-gray-200'
-                 }`}
-               >
-                 {f}
-               </button>
-             ))}
-           </div>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredCycles.map(cycle => (
-            <div key={cycle.id} className="flex flex-col md:flex-row bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 group">
-              
-              {/* Image Side */}
-              <div className="w-full md:w-2/5 relative overflow-hidden h-48 md:h-auto">
-                <img src={cycle.image} alt={cycle.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute top-3 left-3 bg-brand-yellow text-brand-darkblue text-xs font-bold px-2 py-1 rounded uppercase">
-                  {cycle.modality}
-                </div>
-              </div>
-
-              {/* Content Side */}
-              <div className="w-full md:w-3/5 p-6 flex flex-col justify-between">
-                <div>
-                   <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{cycle.university}</span>
-                      <span className="text-xs font-bold text-brand-magenta bg-pink-50 px-2 py-1 rounded-full">Vacantes Limitadas</span>
-                   </div>
-                   <h3 className="text-2xl font-black text-slate-800 mb-3 leading-tight group-hover:text-brand-cyan transition-colors">
-                     {cycle.title}
-                   </h3>
-                   
-                   <div className="space-y-2 mb-6">
-                      <div className="flex items-center text-slate-600 text-sm font-medium">
-                        <Calendar size={16} className="mr-2 text-brand-cyan" />
-                        Inicio: {cycle.startDate}
-                      </div>
-                      <div className="flex items-center text-slate-600 text-sm font-medium">
-                        <Clock size={16} className="mr-2 text-brand-cyan" />
-                        {cycle.schedule}
-                      </div>
-                   </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Link to="/contacto" className="flex-1 bg-brand-darkblue text-white text-center py-3 rounded-lg font-bold text-sm hover:bg-brand-blue transition shadow-lg">
-                    Matricularme
-                  </Link>
-                  <button className="w-12 h-11 flex items-center justify-center border-2 border-gray-200 rounded-lg text-slate-400 hover:border-brand-cyan hover:text-brand-cyan transition">
-                     <ChevronRight size={20} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* SECTION: Scholarship Banner */}
-      <section className="container mx-auto px-4 pb-20">
-        <div className="bg-gradient-to-r from-[#5b6bf1] to-brand-cyan rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
-           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
-           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-brand-magenta/40 rounded-full blur-3xl"></div>
-           
-           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="text-center md:text-left">
-                <h2 className="text-3xl md:text-5xl font-black font-display italic mb-2">¡CONCURSO DE BECAS!</h2>
-                <p className="text-blue-100 text-lg max-w-xl">Demuestra tu talento y gana una beca completa para el Ciclo Semestral. Próximo examen: 15 de Marzo.</p>
-              </div>
-              <Link to="/contacto" className="bg-white text-brand-darkblue px-8 py-4 rounded-full font-black text-lg hover:scale-105 transition-transform shadow-xl uppercase tracking-wide whitespace-nowrap">
-                 Inscribirme Ahora
-              </Link>
-           </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };
