@@ -9,6 +9,7 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: 'INICIO', path: '/' },
+    { name: 'NOSOTROS', path: '/nosotros' },
     { 
       name: 'CICLOS', 
       path: '/ciclos',
@@ -37,7 +38,6 @@ const Navbar: React.FC = () => {
     },
     { name: 'SEDES', path: '/sedes' },
     { name: 'RECURSOS', path: '/recursos' },
-    { name: 'NOSOTROS', path: '/nosotros' },
   ];
 
   const toggleMobileSubMenu = (name: string) => {

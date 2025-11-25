@@ -1,42 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, ChevronDown, Award, Layers, Users } from 'lucide-react';
-import CycleCard from '../components/CycleCard';
-import { Cycle } from '../types';
+import { ArrowRight, Check, ChevronDown, Award, Layers, Users, PlusCircle, Laptop, LogIn, GraduationCap } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
-
-const featuredCycles: Cycle[] = [
-  {
-    id: '4',
-    title: 'ANUAL SAN MARCOS',
-    university: 'San Marcos',
-    description: 'Formación integral con enfoque en letras y ciencias según tu bloque. Exigencia total.',
-    startDate: '15 MARZO',
-    schedule: '8AM - 2PM',
-    image: 'https://picsum.photos/id/2/400/300',
-    modality: 'Presencial'
-  },
-  {
-    id: '2',
-    title: 'REPASO SAN MARCOS',
-    university: 'San Marcos',
-    description: 'Estrategia DECO y full práctica. Asegura tu vacante en medicina o ingeniería.',
-    startDate: '01 ABRIL',
-    schedule: '8AM - 2PM',
-    image: 'https://picsum.photos/id/24/400/300',
-    modality: 'Híbrido'
-  },
-  {
-    id: '7',
-    title: 'SEMESTRAL VILLARREAL',
-    university: 'General', // Using 'General' maps to Villarreal in Cycle logic or we can adapt standard
-    description: 'Preparación intensiva y objetiva para el examen de admisión Villarreal.',
-    startDate: '10 ABRIL',
-    schedule: '3PM - 8PM',
-    image: 'https://picsum.photos/id/20/400/300',
-    modality: 'Virtual'
-  }
-];
 
 const Home: React.FC = () => {
   return (
@@ -155,65 +120,144 @@ const Home: React.FC = () => {
          </div>
       </section>
 
-      {/* Cards Section */}
-      <section className="py-20 bg-slate-50">
+      {/* NEW SECTION: SOBRE LA INSTITUCIÓN & NUESTROS SERVICIOS */}
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <ScrollReveal direction="up">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-black text-slate-800 italic mb-2 uppercase">
-                Nuestros Ciclos <span className="text-brand-cyan">Académicos</span>
-              </h2>
-              <div className="w-24 h-1 bg-brand-magenta mx-auto"></div>
-            </div>
-          </ScrollReveal>
+          <div className="flex flex-col lg:flex-row gap-12 items-stretch">
+            
+            {/* Left Column: Institution Info */}
+            <div className="w-full lg:w-7/12 space-y-8 flex flex-col">
+               <ScrollReveal direction="up">
+                 {/* Title Badge */}
+                 <div className="inline-block bg-brand-cyan text-white px-8 py-3 font-black text-xl md:text-3xl uppercase transform skew-x-[-12deg] shadow-lg mb-4">
+                    <span className="transform skew-x-[12deg] inline-block font-display">Sobre la Institución</span>
+                 </div>
+                 
+                 {/* Image */}
+                 <div className="relative h-64 md:h-[22rem] w-full rounded-2xl overflow-hidden shadow-xl border-4 border-slate-50">
+                     <div className="absolute inset-0 bg-brand-darkblue/10"></div>
+                     <img 
+                       src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" 
+                       alt="Estudiantes Innovamas" 
+                       className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700" 
+                     />
+                 </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredCycles.map((cycle, index) => (
-              <ScrollReveal key={cycle.id} delay={index * 150} direction="up">
-                <CycleCard cycle={cycle} featured={cycle.university === 'San Marcos'} />
-              </ScrollReveal>
-            ))}
-          </div>
-          
-          <ScrollReveal direction="up" delay={300}>
-            <div className="mt-12 text-center">
-               <Link to="/ciclos" className="inline-flex items-center bg-brand-cyan text-white px-8 py-4 rounded-full font-bold uppercase tracking-wide hover:bg-brand-darkblue transition shadow-lg hover:scale-105 transform">
-                Ver todos los ciclos <ArrowRight size={20} className="ml-2" />
-              </Link>
+                 {/* Text Content */}
+                 <div className="space-y-6 text-slate-600 leading-relaxed text-lg text-justify font-medium">
+                    <p>
+                      Con una destacada trayectoria académica y cultural formando estudiantes con un alto nivel, somos tu garantía de ingreso seguro a las más importantes universidades del país.
+                    </p>
+                    <p>
+                      La <span className="font-bold text-brand-blue">academia INNOVAMAS</span> brinda sólidos conocimientos en Ciencias y Humanidades. Además, se preocupa para que sus estudiantes reciban una formación integral. Los indicadores contundentes de esta exitosa forma de trabajo son nuestros continuos ingresos masivos a la Universidad Nacional Mayor de San Marcos (UNMSM) y otras universidades como la Universidad Nacional Federico Villarreal (UNFV) y la Universidad Nacional del Callao (UNAC).
+                    </p>
+                    <p>
+                      Nuestros programas están diseñados de acuerdo a las exigencias del examen de admisión y con una metodología adecuada para cada nivel de preparación.
+                    </p>
+                    <p className="border-l-4 border-brand-cyan pl-4 italic text-slate-500">
+                      En la actualidad contamos con la modalidad presencial en nuestras sedes y modalidad virtual a través de nuestra moderna plataforma para estudiantes.
+                    </p>
+                 </div>
+
+                 {/* Link */}
+                 <div className="pt-4">
+                   <Link to="/nosotros" className="inline-flex items-center gap-2 text-brand-cyan font-black uppercase tracking-wider hover:text-brand-blue transition-colors group">
+                      <div className="rounded-full border-2 border-current p-1 group-hover:bg-brand-cyan group-hover:text-white transition-colors">
+                        <PlusCircle size={16} strokeWidth={3} />
+                      </div> 
+                      Leer más
+                   </Link>
+                 </div>
+               </ScrollReveal>
             </div>
-          </ScrollReveal>
+
+            {/* Right Column: Services / Intranet */}
+            <div className="w-full lg:w-5/12">
+               <ScrollReveal direction="left" delay={200} className="h-full">
+                  <div className="bg-brand-darkblue text-white rounded-[2.5rem] p-8 md:p-10 h-full shadow-2xl relative overflow-hidden group flex flex-col items-center">
+                     {/* Background Decoration */}
+                     <div className="absolute top-0 right-0 w-80 h-80 bg-brand-cyan opacity-20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-magenta opacity-10 rounded-full blur-3xl -ml-10 -mb-10"></div>
+                     
+                     {/* Title */}
+                     <div className="text-center mb-8 relative z-10">
+                        <h3 className="text-3xl font-black font-display uppercase italic leading-none">
+                           Nuestros <br/> <span className="text-brand-yellow text-4xl">Servicios</span>
+                        </h3>
+                        <div className="w-16 h-1 bg-white mx-auto mt-4 rounded-full"></div>
+                     </div>
+
+                     {/* Mock Laptop/Screen Graphic */}
+                     <div className="relative w-full max-w-[320px] mb-8 group-hover:scale-105 transition-transform duration-500 z-10">
+                        {/* Circle Image Badge */}
+                        <div className="absolute -top-10 -right-4 w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-lg z-20">
+                           <img 
+                              src="https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                              className="w-full h-full object-cover" 
+                              alt="Estudiante feliz"
+                           />
+                        </div>
+
+                        {/* Laptop Frame */}
+                        <div className="bg-slate-700 rounded-t-xl p-3 pb-0 mx-auto shadow-2xl">
+                           <div className="bg-white rounded-t-lg overflow-hidden h-40 flex flex-col relative">
+                              {/* Screen Header */}
+                              <div className="h-6 bg-brand-blue flex items-center px-2 space-x-1">
+                                <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                                <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+                                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                              </div>
+                              {/* Screen Content (Login Form Mock) */}
+                              <div className="flex-1 p-4 flex flex-col items-center justify-center space-y-3 bg-slate-50">
+                                 <GraduationCap className="text-brand-cyan mb-1" size={24} />
+                                 <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Bienvenido</div>
+                                 <div className="w-full h-6 bg-white border border-slate-200 rounded flex items-center px-2 text-slate-300 text-[8px]">Usuario</div>
+                                 <div className="w-full h-6 bg-white border border-slate-200 rounded flex items-center px-2 text-slate-300 text-[8px]">Contraseña</div>
+                                 <div className="w-full h-6 bg-brand-blue rounded shadow-sm"></div>
+                              </div>
+                           </div>
+                        </div>
+                        <div className="bg-slate-800 h-3 rounded-b-xl w-[110%] -ml-[5%] shadow-xl flex justify-center">
+                           <div className="w-12 h-1 bg-slate-600 rounded-full mt-1"></div>
+                        </div>
+                     </div>
+
+                     <div className="text-center space-y-4 relative z-10 mt-auto">
+                        <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-1 rounded-full text-brand-cyan font-bold text-sm mb-2 backdrop-blur-sm border border-white/20">
+                           <Laptop size={16} /> Intranet
+                        </div>
+                        <h4 className="text-2xl font-black text-white font-display uppercase tracking-wide">
+                           AULA VIRTUAL <span className="text-brand-cyan">RENOVADA</span>
+                        </h4>
+                        <p className="text-blue-100 leading-relaxed text-sm px-4">
+                           Nuestra <strong>AULA VIRTUAL</strong> es una plataforma más dinámica, interactiva y fácil de navegar desde donde estés.
+                        </p>
+                        
+                        <div className="pt-4 pb-2">
+                           <a href="#" className="inline-flex items-center gap-2 text-brand-yellow font-black uppercase text-sm border-2 border-brand-yellow px-6 py-2 rounded-full hover:bg-brand-yellow hover:text-brand-darkblue transition-all duration-300">
+                              <LogIn size={16} /> Ingresar
+                           </a>
+                        </div>
+                        
+                        <div className="flex justify-center gap-2 mt-4 opacity-50">
+                           <div className="w-2 h-2 bg-white rounded-full"></div>
+                           <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                           <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                        </div>
+                     </div>
+                  </div>
+               </ScrollReveal>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* WHO ARE WE & PILLARS SECTION */}
-      <section className="py-20 bg-white relative overflow-hidden">
+      {/* PILLARS SECTION */}
+      <section className="py-20 bg-slate-50 relative overflow-hidden">
         <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]"></div>
 
         <div className="container mx-auto px-4 relative z-10">
           
-          <div className="flex flex-col lg:flex-row items-center gap-12 mb-20">
-             <div className="w-full lg:w-1/3">
-                <ScrollReveal direction="right">
-                  <div className="bg-[#5b6bf1] text-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl transform -rotate-1 hover:rotate-0 transition-transform duration-500 relative overflow-hidden">
-                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
-                     <h2 className="text-5xl md:text-6xl font-black font-display italic leading-none uppercase">
-                       ¿Quiénes<br/>Somos?
-                     </h2>
-                  </div>
-                </ScrollReveal>
-             </div>
-
-             <div className="w-full lg:w-2/3">
-                <ScrollReveal direction="left" delay={200}>
-                  <div className="border-l-4 border-brand-cyan pl-8 py-2">
-                    <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium text-justify">
-                      Somos una academia preuniversitaria comprometida con el <span className="text-[#5b6bf1] font-bold">éxito académico</span> y el desarrollo integral de nuestros estudiantes. Nuestro enfoque es brindar una formación sólida y personalizada que los prepare para alcanzar sus metas en los exámenes de admisión de San Marcos y Villarreal.
-                    </p>
-                  </div>
-                </ScrollReveal>
-             </div>
-          </div>
-
           <ScrollReveal direction="up">
             <div className="mb-16">
                <div className="w-full bg-gradient-to-r from-[#5b6bf1] to-[#00adef] py-4 md:py-6 transform skew-x-[-2deg] shadow-lg rounded-lg flex justify-center items-center">
